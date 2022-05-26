@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const EmployeList = require("./model/employeList.js");
 const TodayClass = require("./model/todayClass.js");
+const PostActivity = require("./model/postactivity.js");
 
 const app = express();
 
@@ -89,6 +90,59 @@ app.get("/todayclass", async (req, res) => {
 // delete todayclass data with id
 app.delete("/todayclass/:id", (req, res) => {
   TodayClass.findByIdAndDelete(req.params.id, (err, docs) => {});
+});
+
+// edit/put todayclass data with id
+app.put("/todayclass/:id", (req, res) => {
+  const items = {
+    batch: req.body.batch,
+    time: req.body.time,
+    room: req.body.room,
+    present: req.body.present,
+  };
+  TodayClass.findByIdAndUpdate(req.params.id, items, (err, docs) => {
+    console.log(err);
+    console.log(docs);
+  });
+});
+
+////////// Activity Details //////////
+// post activity data
+app.post("/postactivity", (req, res) => {
+  const items = {
+    name: req.body.name,
+    hour: req.body.hour,
+    details: req.body.details,
+  };
+  const doc = new PostActivity(items);
+  doc.save();
+});
+
+// get post activity data
+app.get("/postactivity", async (req, res) => {
+  const data = await PostActivity.find({});
+  res.send(data);
+});
+
+// post activity delete
+app.delete("/postactivity/:id", (req, res) => {
+  PostActivity.findByIdAndDelete(req.params.id, (err, docs) => {
+    console.log(err);
+    console.log(docs);
+  });
+});
+
+// post activity edit/put
+app.put("/postactivity/:id", (req, res) => {
+  const items = {
+    name: req.body.name,
+    hour: req.body.hour,
+    details: req.body.details,
+  };
+  PostActivity.findByIdAndUpdate(req.params.id, items, (err, docs) => {
+    console.log(err);
+    console.log(docs);
+  });
 });
 
 // server running port

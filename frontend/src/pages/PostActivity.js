@@ -1,15 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const PostActivity = () => {
+  let [name, setName] = useState("");
+  let [hour, setHour] = useState("");
+  let [details, setDetails] = useState("");
+
+  let handleSubmit = () => {
+    if (!name && !hour && !details) {
+      alert("Fill the all details!");
+    } else {
+      axios.post("http://localhost:8000/postactivity", {
+        name: name,
+        hour: hour,
+        details: details,
+      });
+      setName("");
+      setHour("");
+      setDetails("");
+    }
+  };
+
   return (
     <div className="margin_left">
       <div className="post_activity">
-        <input type="text" placeholder="Activity Name" />
-        <input type="text" placeholder="Hour take" />
+        <input value={name} onChange={(e) => setName(e.target.value)} type="text" placeholder="Activity Name" />
+        <input value={hour} onChange={(e) => setHour(e.target.value)} type="text" placeholder="Hour take" />
         <br />
-        <input type="text" placeholder="Activity Details" />
+        <input value={details} onChange={(e) => setDetails(e.target.value)} type="text" placeholder="Activity Details" />
         <br />
-        <button>Submit</button>
+        <button onClick={handleSubmit}>Submit</button>
       </div>
     </div>
   );

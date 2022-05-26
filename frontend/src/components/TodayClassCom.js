@@ -20,6 +20,7 @@ const TodayClassCom = () => {
   let [timeEdit, setTimeEdit] = useState("");
   let [roomEdit, setRoomEdit] = useState("");
   let [presentEdit, setPresentEdit] = useState("");
+  let [id, setId] = useState("");
 
   // post todayclass data
   let handleSubmit = () => {
@@ -53,8 +54,23 @@ const TodayClassCom = () => {
 
   // edit classtoday data with id
   let handleEdit = (id, batch, time, room, present) => {
+    setId(id);
+    setBatchEdit(batch);
+    setTimeEdit(time);
+    setRoomEdit(room);
+    setPresentEdit(present);
     setPopup(!popup);
-    console.log(id, batch, time, room, present);
+  };
+
+  let handleEditSubmit = () => {
+    axios.put(`http://localhost:8000/todayclass/${id}`, {
+      batch: batchEdit,
+      time: timeEdit,
+      room: roomEdit,
+      present: presentEdit,
+    });
+    setPopup(!popup);
+    setOne(!one);
   };
 
   return (
@@ -99,13 +115,13 @@ const TodayClassCom = () => {
         <div id="edit_popup">
           <div className="edit_popup">
             <div className="employe_form">
-              <input type="text" placeholder="Batch" />
-              <input type="text" placeholder="Time" />
+              <input onChange={(e) => setBatchEdit(e.target.value)} value={batchEdit} type="text" placeholder="Batch" />
+              <input onChange={(e) => setTimeEdit(e.target.value)} value={timeEdit} type="text" placeholder="Time" />
               <br />
-              <input type="text" placeholder="Room" />
-              <input type="text" placeholder="Present" />
+              <input onChange={(e) => setRoomEdit(e.target.value)} value={roomEdit} type="text" placeholder="Room" />
+              <input onChange={(e) => setPresentEdit(e.target.value)} value={presentEdit} type="text" placeholder="Present" />
               <br />
-              <button>Submit</button>
+              <button onClick={handleEditSubmit}>Submit</button>
               <button onClick={() => setPopup(!popup)} className="close_btn">
                 Close
               </button>
