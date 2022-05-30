@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar";
 
 const ActivityDetails = () => {
   let [popup, setPopup] = useState(false);
@@ -43,6 +44,7 @@ const ActivityDetails = () => {
 
   return (
     <>
+      <Sidebar />
       <div className="margin_left">
         <div id="employe_table_list">
           <div className="employe_table_list">

@@ -1,9 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+// model =>
 const EmployeList = require("./model/employeList.js");
 const TodayClass = require("./model/todayClass.js");
 const PostActivity = require("./model/postactivity.js");
+const User = require("./model/user.js");
 
 const app = express();
 
@@ -143,6 +146,58 @@ app.put("/postactivity/:id", (req, res) => {
     console.log(err);
     console.log(docs);
   });
+});
+
+// Registration
+// post registration data
+app.post("/registration", (req, res) => {
+  bcrypt.hash(req.body.password, 10, function (err, hash) {
+    // Store hash in your password DB.
+    items = {
+      name: req.body.name,
+      email: req.body.email,
+      password: hash,
+    };
+
+    const doc = new User(items);
+    doc.save();
+
+    console.log(err);
+  });
+});
+
+// get user all json data
+app.get("/user", async (req, res) => {
+  const data = await User.find({});
+  res.send(data);
+});
+
+//post and get login user data
+app.post("/login", async (req, res) => {
+  const data = await User.find({ email: req.body.email });
+
+  if (data[0]) {
+    bcrypt.compare(req.body.password, data[0].password, function (err, result) {
+      if (result) {
+        res.send({
+          msg: "account-found",
+          currentUser: {
+            uid: data[0]._id,
+            displayName: data[0].name,
+            email: data[0].email,
+          },
+          metaData: {
+            created: "21 May 2022",
+            lastLogin: "29 May 2022",
+          },
+        });
+      } else {
+        res.send({ msg: "wrong-password" });
+      }
+    });
+  } else {
+    res.send({ msg: "email-not-found" });
+  }
 });
 
 // server running port
